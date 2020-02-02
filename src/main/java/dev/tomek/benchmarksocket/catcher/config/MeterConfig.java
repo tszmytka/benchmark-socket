@@ -20,6 +20,11 @@ public class MeterConfig {
     }
 
     @Bean
+    public Counter counterMessagesZmq(MeterRegistry meterRegistry) {
+        return meterRegistry.counter("messages.received", "transport", "zmq");
+    }
+
+    @Bean
     public Counter counterMessagesRsocket(MeterRegistry meterRegistry) {
         return meterRegistry.counter("messages.received", "transport", "rsocket");
     }

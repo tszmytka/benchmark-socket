@@ -4,6 +4,7 @@ import dev.tomek.benchmarksocket.Command;
 import dev.tomek.benchmarksocket.catcher.transport.CatchTransport;
 import io.micrometer.core.instrument.Counter;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.zeromq.SocketType;
@@ -20,7 +21,7 @@ public class CatchZmq implements CatchTransport {
     private final Counter counter;
     private final Duration duration;
 
-    public CatchZmq(@Value("${transports.zmq.port}") int port, ZContext zContext, Counter counter, @Value("${duration-per-transport}") Duration duration) {
+    public CatchZmq(@Value("${transports.zmq.port}") int port, ZContext zContext, @Qualifier("counterMessagesZmq") Counter counter, @Value("${duration-per-transport}") Duration duration) {
         socket = zContext.createSocket(SocketType.SUB);
         socket.connect("tcp://127.0.0.1:" + port);
         this.counter = counter;
@@ -29,7 +30,7 @@ public class CatchZmq implements CatchTransport {
 
     @Override
     public void run() {
-        // todo Is there a way of easily the producer to stop?
+        // todo Is there a way of easily telling the producer to stop?
         long endMillis = ZonedDateTime.now().plus(duration).toInstant().toEpochMilli();
         // SUB socket is ONLY for recv()
 //        socket.send(Command.START.toString());

@@ -1,7 +1,8 @@
-package dev.tomek.benchmarksocket.pitcher.transport;
+package dev.tomek.benchmarksocket.pitcher.transport.rsocket;
 
 import dev.tomek.benchmarksocket.Command;
 import dev.tomek.benchmarksocket.pitcher.msgprovider.MsgProvider;
+import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import io.rsocket.AbstractRSocket;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
