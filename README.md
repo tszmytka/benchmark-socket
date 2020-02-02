@@ -1,5 +1,5 @@
 # benchmark-socket
-Project comparing performance aspects of various transport connection types:
+Project comparing performance aspects of various pitchTransport connection types:
 * Socket
 * Rsocket
 * ZMQ

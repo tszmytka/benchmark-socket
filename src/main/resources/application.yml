@@ -6,3 +6,5 @@ transports:
     port: 7002
   rsocket:
     port: 7003
+server:
+  port: 0

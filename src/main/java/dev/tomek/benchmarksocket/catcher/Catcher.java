@@ -1,4 +1,4 @@
-package dev.tomek.benchmarksocket.pitcher;
+package dev.tomek.benchmarksocket.catcher;
 
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import lombok.RequiredArgsConstructor;
@@ -9,18 +9,12 @@ import java.util.Collection;
 
 @Component
 @RequiredArgsConstructor
-public class Pitcher implements SmartLifecycle {
-
+public class Catcher implements SmartLifecycle {
     private final Collection<PitchTransport> pitchTransports;
 
     @Override
     public void start() {
-        pitchTransports.forEach(pitchTransport -> {
-            pitchTransport.run();
-
-            int a = 123;
-
-        });
+        pitchTransports.forEach(PitchTransport::run);
     }
 
     @Override

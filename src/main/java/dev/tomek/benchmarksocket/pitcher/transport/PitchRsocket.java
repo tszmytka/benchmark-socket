@@ -16,11 +16,11 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Component
-public class Rsocket implements Transport {
+public class PitchRsocket implements PitchTransport {
 
     private final RSocketFactory.Start<CloseableChannel> transport;
 
-    public Rsocket(@Value("${transports.rsocket.port}") int port, RSocket pitchingSocket) {
+    public PitchRsocket(@Value("${transports.rsocket.port}") int port, RSocket pitchingSocket) {
         this.transport = RSocketFactory.receive()
             .acceptor((setup, sendingSocket) -> Mono.just(pitchingSocket))
             .transport(TcpServerTransport.create(port));
@@ -41,7 +41,11 @@ public class Rsocket implements Transport {
 
         @Override
         public Flux<Payload> requestStream(Payload payload) {
-            return msgFlux.map(DefaultPayload::create).doFinally(signalType -> dispose());
+            String command = payload.getDataUtf8();
+            if (command.equalsIgnoreCase("START")) {
+                return msgFlux.map(DefaultPayload::create).doFinally(signalType -> dispose());
+            }
+            throw new IllegalArgumentException("Unknown command");
         }
     }
 }
