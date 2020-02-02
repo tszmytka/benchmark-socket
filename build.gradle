@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '2.2.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+
+group = 'dev.tomek'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+def lombokVersion = '1.18.10'
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileJava {
+    options.encoding 'UTF-8'
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.rsocket:rsocket-core:1.0.0-RC5'
+    implementation 'io.rsocket:rsocket-transport-netty:1.0.0-RC5'
+
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+}

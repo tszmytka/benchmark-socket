@@ -1,0 +1,12 @@
+*target/
+.classpath
+.project
+.settings
+.idea/
+*.iml
+.gradle
+# standard gradle build output dir
+build
+
+# standard intellij build output dir
+out
