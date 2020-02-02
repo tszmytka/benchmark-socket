@@ -15,9 +15,7 @@ public class Pitcher implements SmartLifecycle {
 
     @Override
     public void start() {
-        pitchTransports.forEach(pitchTransport -> {
-            pitchTransport.run();
-        });
+        pitchTransports.forEach(Runnable::run);
     }
 
     @Override

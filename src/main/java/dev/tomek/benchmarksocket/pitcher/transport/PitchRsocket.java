@@ -1,5 +1,6 @@
 package dev.tomek.benchmarksocket.pitcher.transport;
 
+import dev.tomek.benchmarksocket.Command;
 import dev.tomek.benchmarksocket.pitcher.msgprovider.MsgProvider;
 import io.rsocket.AbstractRSocket;
 import io.rsocket.Payload;
@@ -43,10 +44,13 @@ public class PitchRsocket implements PitchTransport {
 
         @Override
         public Flux<Payload> requestStream(Payload payload) {
-            String command = payload.getDataUtf8();
-            if (command.equalsIgnoreCase("START")) {
-                LOGGER.info(String.format("Received command '%s'. Begin sending messages", command));
-                return msgFlux.map(DefaultPayload::create).doFinally(signalType -> dispose());
+            Command command = Command.valueOf(payload.getDataUtf8());
+            switch (command) {
+                case START:
+                    LOGGER.info(String.format("Received command '%s'. Begin sending messages", command));
+                    return msgFlux.map(DefaultPayload::create).doFinally(signalType -> dispose());
+                case STOP:
+                    throw new IllegalArgumentException("Not yet implemented");
             }
             throw new IllegalArgumentException("Unknown command");
         }

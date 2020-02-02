@@ -1,5 +1,6 @@
 package dev.tomek.benchmarksocket.catcher.transport;
 
+import dev.tomek.benchmarksocket.Command;
 import io.micrometer.core.instrument.Counter;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
@@ -28,7 +29,9 @@ public class CatchRsocket implements CatchTransport {
     @Override
     public void run() {
         transport.start()
-            .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create("START")).map(Payload::getDataUtf8).doOnComplete(() -> LOGGER.info("Meter count: " + counter.count())))
-            .subscribe(s -> counter.increment());
+            .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create(Command.START.toString())).map(Payload::getDataUtf8))
+            .doOnEach(s -> counter.increment())
+            .blockLast();
+        LOGGER.info("Total messages count: " + counter.count());
     }
 }
