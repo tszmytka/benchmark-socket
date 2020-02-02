@@ -17,9 +17,6 @@ public class Pitcher implements SmartLifecycle {
     public void start() {
         pitchTransports.forEach(pitchTransport -> {
             pitchTransport.run();
-
-            int a = 123;
-
         });
     }
 

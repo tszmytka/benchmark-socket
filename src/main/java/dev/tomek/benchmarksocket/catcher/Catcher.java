@@ -1,7 +1,8 @@
 package dev.tomek.benchmarksocket.catcher;
 
-import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
+import dev.tomek.benchmarksocket.catcher.transport.CatchTransport;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
@@ -9,12 +10,21 @@ import java.util.Collection;
 
 @Component
 @RequiredArgsConstructor
+@Log
 public class Catcher implements SmartLifecycle {
-    private final Collection<PitchTransport> pitchTransports;
+    private final Collection<CatchTransport> catchTransports;
 
     @Override
     public void start() {
-        pitchTransports.forEach(PitchTransport::run);
+        final String message = "receiving messages from Pitcher";
+        LOGGER.info("Start " + message);
+        catchTransports.forEach(catchTransport -> {
+            String msg = "using " + catchTransport.getClass().getSimpleName();
+            LOGGER.info("Start " + msg);
+            catchTransport.run();
+            LOGGER.info("Finished " + msg);
+        });
+        LOGGER.info("Finished " + message);
     }
 
     @Override
