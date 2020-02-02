@@ -25,6 +25,9 @@ compileJava {
 dependencies {
     compileOnly "org.projectlombok:lombok:$lombokVersion"
 
+    // zmq
+    implementation 'org.zeromq:jeromq:0.5.2'
+
     // rsocket
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.rsocket:rsocket-core:1.0.0-RC5'

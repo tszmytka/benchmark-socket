@@ -32,6 +32,6 @@ public class CatchRsocket implements CatchTransport {
             .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create(Command.START.toString())).map(Payload::getDataUtf8))
             .doOnEach(s -> counter.increment())
             .blockLast();
-        LOGGER.info("Total messages count: " + counter.count());
+        LOGGER.info("Total messages received count: " + counter.count());
     }
 }
