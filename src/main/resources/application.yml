@@ -1,0 +1,8 @@
+duration-per-transport: PT20S
+transports:
+  socket:
+    port: 7001
+  zmq:
+    port: 7002
+  rsocket:
+    port: 7003
