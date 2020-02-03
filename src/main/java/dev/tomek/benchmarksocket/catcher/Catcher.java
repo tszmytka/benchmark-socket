@@ -16,15 +16,12 @@ public class Catcher implements SmartLifecycle {
 
     @Override
     public void start() {
-        final String message = "receiving messages from Pitcher";
-        LOGGER.info("Start " + message);
         catchTransports.forEach(catchTransport -> {
-            String msg = "using " + catchTransport.getClass().getSimpleName();
+            String msg = "receiving messages with " + catchTransport.getClass().getSimpleName();
             LOGGER.info("Start " + msg);
             catchTransport.run();
             LOGGER.info("Finished " + msg);
         });
-        LOGGER.info("Finished " + message);
     }
 
     @Override

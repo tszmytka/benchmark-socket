@@ -9,6 +9,14 @@ import java.util.stream.Stream;
 public class StaticGenerator implements MsgProvider {
     @Override
     public Stream<String> provide() {
+        return infiniteSequentialInts();
+    }
+
+    private Stream<String> infiniteStrings() {
         return Stream.generate(() -> "Message at " + Instant.now());
+    }
+
+    private Stream<String> infiniteSequentialInts() {
+        return Stream.iterate(0, i -> i + 1).map(i -> "Message #" + i + " at " + System.currentTimeMillis());
     }
 }

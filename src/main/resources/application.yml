@@ -1,4 +1,4 @@
-duration-per-transport: PT60S
+duration-per-transport: PT30S
 transports:
   socket:
     port: 7001
