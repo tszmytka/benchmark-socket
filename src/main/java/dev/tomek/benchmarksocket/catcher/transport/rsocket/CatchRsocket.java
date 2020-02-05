@@ -32,9 +32,9 @@ public class CatchRsocket implements CatchTransport {
     @Override
     public void run() {
         transport.start()
-            .take(duration)
             .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create(Command.START.toString())).map(Payload::getDataUtf8))
             .doOnEach(s -> counter.increment())
+            .take(duration)
             .blockLast();
         LOGGER.info("Total messages received count: " + counter.count());
     }
