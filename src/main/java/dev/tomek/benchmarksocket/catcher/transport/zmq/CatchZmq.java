@@ -1,6 +1,5 @@
 package dev.tomek.benchmarksocket.catcher.transport.zmq;
 
-import dev.tomek.benchmarksocket.Command;
 import dev.tomek.benchmarksocket.catcher.transport.CatchTransport;
 import io.micrometer.core.instrument.Counter;
 import lombok.extern.java.Log;
@@ -22,7 +21,7 @@ public class CatchZmq implements CatchTransport {
     private final Duration duration;
 
     public CatchZmq(@Value("${transports.zmq.port}") int port, ZContext zContext, @Qualifier("counterMessagesZmq") Counter counter, @Value("${duration-per-transport}") Duration duration) {
-        socket = zContext.createSocket(SocketType.SUB);
+        socket = zContext.createSocket(SocketType.PULL);
         socket.connect("tcp://127.0.0.1:" + port);
         this.counter = counter;
         this.duration = duration;
@@ -30,17 +29,12 @@ public class CatchZmq implements CatchTransport {
 
     @Override
     public void run() {
-        // todo Is there a way of easily telling the producer to stop?
         long endMillis = ZonedDateTime.now().plus(duration).toInstant().toEpochMilli();
-        // SUB socket is ONLY for recv()
-//        socket.send(Command.START.toString());
-        socket.subscribe("");
         while (System.currentTimeMillis() <= endMillis) {
             String msg = new String(socket.recv());
             // todo store msg and after all is done calculate hash to see if all messages have been received
             counter.increment();
         }
-        socket.send(Command.STOP.toString());
         LOGGER.info("Total messages received count: " + counter.count());
     }
 }
