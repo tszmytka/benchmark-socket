@@ -14,8 +14,8 @@ import org.zeromq.ZMQ;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-@Component
 @Log
+@Component
 public class CatchZmq implements CatchTransport {
     private final ZMQ.Socket socket;
     private final Counter counter;

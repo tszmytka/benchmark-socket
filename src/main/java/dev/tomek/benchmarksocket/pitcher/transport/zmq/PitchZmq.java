@@ -3,7 +3,10 @@ package dev.tomek.benchmarksocket.pitcher.transport.zmq;
 import dev.tomek.benchmarksocket.Command;
 import dev.tomek.benchmarksocket.pitcher.msgprovider.MsgProvider;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
+import dev.tomek.benchmarksocket.pitcher.transport.PitchTransportAbstract;
+import io.micrometer.core.instrument.Counter;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.zeromq.SocketType;
@@ -12,15 +15,21 @@ import org.zeromq.ZMQ;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Component
 @Log
-public class PitchZmq implements PitchTransport {
+@Component
+public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
     private final ZMQ.Socket socket;
     private final MsgProvider msgProvider;
 
-    public PitchZmq(@Value("${transports.zmq.port}") int port, ZContext zContext, MsgProvider msgProvider) {
-        socket = zContext.createSocket(SocketType.PUB);
+    public PitchZmq(
+        @Qualifier("counterMessagesRsocket") Counter counter,
+        @Value("${transports.zmq.port}") int port,
+        MsgProvider msgProvider,
+        ZContext zContext
+    ) {
+        super(counter);
         this.msgProvider = msgProvider;
+        socket = zContext.createSocket(SocketType.PUB);
         socket.bind("tcp://*:" + port);
     }
 
@@ -33,7 +42,11 @@ public class PitchZmq implements PitchTransport {
         switch (command) {
             case START:
                 shouldSend.set(true);
-                msgProvider.provide().takeWhile(s -> shouldSend.get()).forEach(socket::send);
+                msgProvider.provide().takeWhile(s -> shouldSend.get()).forEach(data -> {
+                    onEachMessage(data);
+                    socket.send(data, 1);
+                });
+                onFinally();
                 break;
             case STOP:
                 LOGGER.info("STOP received");
@@ -43,3 +56,4 @@ public class PitchZmq implements PitchTransport {
         throw new IllegalArgumentException("Unknown command");
     }
 }
+

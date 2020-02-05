@@ -9,7 +9,11 @@ import java.util.stream.Stream;
 public class StaticGenerator implements MsgProvider {
     @Override
     public Stream<String> provide() {
-        return infiniteSequentialInts();
+        return infiniteStaticString();
+    }
+
+    private Stream<String> infiniteStaticString() {
+        return Stream.generate(() -> "Message static");
     }
 
     private Stream<String> infiniteStrings() {
