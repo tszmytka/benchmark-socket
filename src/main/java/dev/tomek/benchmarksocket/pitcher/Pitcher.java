@@ -2,29 +2,20 @@ package dev.tomek.benchmarksocket.pitcher;
 
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.SmartLifecycle;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
 @Component
 @RequiredArgsConstructor
-public class Pitcher implements SmartLifecycle {
+public class Pitcher {
 
     private final Collection<PitchTransport> pitchTransports;
 
-    @Override
+    @EventListener(ApplicationReadyEvent.class)
     public void start() {
         pitchTransports.forEach(Runnable::run);
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public boolean isRunning() {
-        return false;
     }
 }
