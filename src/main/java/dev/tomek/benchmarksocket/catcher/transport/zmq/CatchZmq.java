@@ -20,7 +20,12 @@ public class CatchZmq implements CatchTransport {
     private final Counter counter;
     private final Duration duration;
 
-    public CatchZmq(@Value("${transports.zmq.port}") int port, ZContext zContext, @Qualifier("counterMessagesZmq") Counter counter, @Value("${duration-per-transport}") Duration duration) {
+    public CatchZmq(
+        @Value("${transports.zmq.port}") int port,
+        ZContext zContext,
+        @Qualifier("counterMessagesZmq") Counter counter,
+        @Value("${duration-per-transport}") Duration duration
+    ) {
         socket = zContext.createSocket(SocketType.PULL);
         socket.connect("tcp://127.0.0.1:" + port);
         this.counter = counter;
