@@ -1,12 +1,13 @@
 plugins {
     id 'java'
+    id 'application'
     id 'idea'
     id 'org.springframework.boot' version '2.2.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'nebula.release' version '14.0.3'
 }
 
 group = 'dev.tomek'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 def lombokVersion = '1.18.10'
 
@@ -20,6 +21,10 @@ test {
 
 compileJava {
     options.encoding 'UTF-8'
+}
+
+application {
+    mainClassName = 'dev.tomek.benchmarksocket.pitcher.PitcherApplication'
 }
 
 dependencies {
