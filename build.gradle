@@ -5,6 +5,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'nebula.release' version '14.0.3'
+    id 'nebula.gradle-git-scm' version '4.2.0'
 }
 
 group = 'dev.tomek'
