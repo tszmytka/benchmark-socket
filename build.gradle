@@ -43,3 +43,7 @@ dependencies {
 
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 }
+
+postRelease {
+    println "Current version " + project.getVersion()
+}
