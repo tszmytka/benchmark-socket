@@ -4,8 +4,8 @@ plugins {
     id 'idea'
     id 'org.springframework.boot' version '2.2.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id "org.ajoberstar.grgit" version '4.0.1'
     id 'nebula.release' version '14.0.3'
-    id "org.ajoberstar.grgit" version "4.0.1"
 }
 
 group = 'dev.tomek'
