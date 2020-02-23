@@ -52,7 +52,10 @@ public class PitchRsocket extends PitchTransportAbstract implements PitchTranspo
             switch (command) {
                 case START:
                     LOGGER.info(String.format("Received command '%s'. Begin sending messages", command));
-                    return msgFlux.doOnEach(s -> onEachMessage(s.get())).map(DefaultPayload::create).doFinally(s -> onFinally());
+                    return msgFlux.doOnEach(s -> onEachMessage(s.get())).map(DefaultPayload::create).doFinally(s -> {
+                        onFinally();
+                        dispose();
+                    });
                 case STOP:
                     throw new IllegalArgumentException("Not yet implemented");
             }

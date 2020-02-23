@@ -8,8 +8,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MeterConfig extends dev.tomek.benchmarksocket.config.MeterConfig {
     @Bean
-    public Counter counterMessagesZmq(MeterRegistry meterRegistry) {
+    public Counter counterMessagesSocket(MeterRegistry meterRegistry) {
         // todo use a BeanFactory instead of having n bean methods?
+        return meterRegistry.counter("messages.sent", "transport", "socket");
+    }
+
+    @Bean
+    public Counter counterMessagesZmq(MeterRegistry meterRegistry) {
         return meterRegistry.counter("messages.sent", "transport", "zmq");
     }
 
