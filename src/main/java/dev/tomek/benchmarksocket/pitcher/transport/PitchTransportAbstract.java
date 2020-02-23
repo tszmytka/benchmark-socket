@@ -1,16 +1,13 @@
 package dev.tomek.benchmarksocket.pitcher.transport;
 
 import io.micrometer.core.instrument.Counter;
-import io.rsocket.AbstractRSocket;
 import lombok.extern.java.Log;
-import reactor.core.publisher.Signal;
-import reactor.core.publisher.SignalType;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Log
-public abstract class PitchTransportAbstract extends AbstractRSocket {
+public abstract class PitchTransportAbstract {
     private final Counter counter;
     private final Set<String> msgsSent = new HashSet<>();
 
@@ -26,6 +23,5 @@ public abstract class PitchTransportAbstract extends AbstractRSocket {
     protected void onFinally() {
         LOGGER.info(String.format("Messages sent: %d. Hash: %s", msgsSent.size(), msgsSent.hashCode()));
         LOGGER.info(String.format("Messages sent: %s", counter.count()));
-        dispose();
     }
 }
