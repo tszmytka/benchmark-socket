@@ -2,12 +2,12 @@ package dev.tomek.benchmarksocket.catcher.transport;
 
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Log
+@Log4j2
 @RequiredArgsConstructor
 public class CatchTransportAbstract {
     private final Counter counter;

@@ -5,7 +5,7 @@ import dev.tomek.benchmarksocket.pitcher.msgprovider.MsgProvider;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransportAbstract;
 import io.micrometer.core.instrument.Counter;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Log
+@Log4j2
 @Component
 public class PitchSocket extends PitchTransportAbstract implements PitchTransport {
     private final MsgProvider msgProvider;
@@ -39,11 +39,13 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
         final AtomicBoolean shouldSend = new AtomicBoolean();
         try {
             final ServerSocket serverSocket = new ServerSocket(port);
+            LOGGER.info("Pitcher ready. Accepting connection...");
             final Socket socket = serverSocket.accept();
             // todo close streams
             final BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketReader.close();
             String line;
+            LOGGER.info("Connection accepted. Waiting for commands...");
             while ((line = socketReader.readLine()) != null) {
                 final Command command = Command.valueOf(line);
                 switch (command) {

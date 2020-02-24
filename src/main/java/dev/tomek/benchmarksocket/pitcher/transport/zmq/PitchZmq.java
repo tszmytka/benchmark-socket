@@ -5,7 +5,7 @@ import dev.tomek.benchmarksocket.pitcher.msgprovider.MsgProvider;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransportAbstract;
 import io.micrometer.core.instrument.Counter;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import org.zeromq.ZMQ;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Log
+@Log4j2
 @Component
 public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
     private final ZMQ.Socket socket;
