@@ -2,12 +2,12 @@ package dev.tomek.benchmarksocket.config;
 
 import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
 import io.micrometer.core.instrument.logging.LoggingRegistryConfig;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 
 import java.time.Duration;
 
-@Log
+@Log4j2
 public class MeterConfig {
     @Bean
     public LoggingMeterRegistry loggingMeterRegistry() {

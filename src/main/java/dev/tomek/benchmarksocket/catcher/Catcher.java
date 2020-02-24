@@ -2,7 +2,7 @@ package dev.tomek.benchmarksocket.catcher;
 
 import dev.tomek.benchmarksocket.catcher.transport.CatchTransport;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-@Log
+@Log4j2
 public class Catcher {
     private final Collection<CatchTransport> catchTransports;
 
