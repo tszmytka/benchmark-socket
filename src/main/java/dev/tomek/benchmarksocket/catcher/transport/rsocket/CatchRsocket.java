@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Log4j2
-//@Component
+@Component
 public class CatchRsocket extends CatchTransportAbstract implements CatchTransport {
     private final RSocketFactory.Start<RSocket> transport;
     private final Duration duration;

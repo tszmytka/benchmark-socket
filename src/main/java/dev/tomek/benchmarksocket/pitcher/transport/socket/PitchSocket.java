@@ -37,19 +37,19 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
     @Override
     public void run() {
         final AtomicBoolean shouldSend = new AtomicBoolean();
-        try {
-            final ServerSocket serverSocket = new ServerSocket(port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             LOGGER.info("Pitcher ready. Accepting connection...");
             final Socket socket = serverSocket.accept();
             // todo close streams
             final BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            socketReader.close();
             String line;
             LOGGER.info("Connection accepted. Waiting for commands...");
             while ((line = socketReader.readLine()) != null) {
                 final Command command = Command.valueOf(line);
+                LOGGER.info("Received command " + command);
                 switch (command) {
                     case START:
+                        LOGGER.info("Start sending messages.");
                         shouldSend.set(true);
                         try (PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)) {
                             msgProvider.provide().takeWhile(s -> shouldSend.get()).forEach(msg -> {

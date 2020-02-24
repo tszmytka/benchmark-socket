@@ -36,7 +36,7 @@ public class CatcherSocket extends CatchTransportAbstract implements CatchTransp
     @Override
     public void run() {
         try (Socket socket = new Socket("localhost", port)) {
-            final PrintWriter socketWriter = new PrintWriter(socket.getOutputStream());
+            final PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true);
             socketWriter.println(Command.START.toString());
             long endMillis = ZonedDateTime.now().plus(duration).toInstant().toEpochMilli();
             final BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

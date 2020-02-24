@@ -13,7 +13,7 @@ import org.zeromq.ZMQ;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-//@Component
+@Component
 public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
     private final ZMQ.Socket socket;
     private final Duration duration;
