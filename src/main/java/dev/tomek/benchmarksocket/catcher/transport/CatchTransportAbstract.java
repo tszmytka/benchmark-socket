@@ -10,7 +10,7 @@ import java.util.Set;
 @Log
 @RequiredArgsConstructor
 public class CatchTransportAbstract {
-    protected final Counter counter;
+    private final Counter counter;
     private final Set<String> msgsReceived = new HashSet<>();
 
     protected void onEachMessage(String msg) {
