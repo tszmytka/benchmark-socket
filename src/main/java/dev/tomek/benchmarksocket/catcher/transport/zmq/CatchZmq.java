@@ -1,8 +1,8 @@
 package dev.tomek.benchmarksocket.catcher.transport.zmq;
 
 import dev.tomek.benchmarksocket.catcher.transport.CatchTransport;
+import dev.tomek.benchmarksocket.catcher.transport.CatchTransportAbstract;
 import io.micrometer.core.instrument.Counter;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,22 +13,20 @@ import org.zeromq.ZMQ;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-@Log
 @Component
-public class CatchZmq implements CatchTransport {
+public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
     private final ZMQ.Socket socket;
-    private final Counter counter;
     private final Duration duration;
 
     public CatchZmq(
-        @Value("${transports.zmq.port}") int port,
-        ZContext zContext,
         @Qualifier("counterMessagesZmq") Counter counter,
-        @Value("${duration-per-transport}") Duration duration
+        @Value("${transports.zmq.port}") int port,
+        @Value("${duration-per-transport}") Duration duration,
+        ZContext zContext
     ) {
+        super(counter);
         socket = zContext.createSocket(SocketType.PULL);
         socket.connect("tcp://127.0.0.1:" + port);
-        this.counter = counter;
         this.duration = duration;
     }
 
@@ -36,10 +34,8 @@ public class CatchZmq implements CatchTransport {
     public void run() {
         long endMillis = ZonedDateTime.now().plus(duration).toInstant().toEpochMilli();
         while (System.currentTimeMillis() <= endMillis) {
-            String msg = new String(socket.recv());
-            // todo store msg and after all is done calculate hash to see if all messages have been received
-            counter.increment();
+            onEachMessage(new String(socket.recv()));
         }
-        LOGGER.info("Total messages received count: " + counter.count());
+        onFinally();
     }
 }
