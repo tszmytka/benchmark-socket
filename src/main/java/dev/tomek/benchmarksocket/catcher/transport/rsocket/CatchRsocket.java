@@ -2,6 +2,7 @@ package dev.tomek.benchmarksocket.catcher.transport.rsocket;
 
 import dev.tomek.benchmarksocket.Command;
 import dev.tomek.benchmarksocket.catcher.transport.CatchTransport;
+import dev.tomek.benchmarksocket.catcher.transport.CatchTransportAbstract;
 import io.micrometer.core.instrument.Counter;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
@@ -17,15 +18,18 @@ import java.time.Duration;
 
 @Log
 @Component
-public class CatchRsocket implements CatchTransport {
+public class CatchRsocket extends CatchTransportAbstract implements CatchTransport {
     private final RSocketFactory.Start<RSocket> transport;
-    private final Counter counter;
     private final Duration duration;
 
-    public CatchRsocket(@Value("${transports.rsocket.port}") int port, @Qualifier("counterMessagesRsocket") Counter counter, @Value("${duration-per-transport}") Duration duration) {
+    public CatchRsocket(
+        @Qualifier("counterMessagesRsocket") Counter counter,
+        @Value("${transports.rsocket.port}") int port,
+        @Value("${duration-per-transport}") Duration duration
+    ) {
+        super(counter);
         transport = RSocketFactory.connect()
             .transport(TcpClientTransport.create(port));
-        this.counter = counter;
         this.duration = duration;
     }
 
