@@ -16,7 +16,7 @@ import org.zeromq.ZMQ;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log4j2
-@Component
+//@Component
 public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
     private final ZMQ.Socket socket;
     private final MsgProvider msgProvider;
