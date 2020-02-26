@@ -25,7 +25,7 @@ public class PitchRsocket extends PitchTransportAbstract implements PitchTranspo
 
     public PitchRsocket(
         @Qualifier("counterMessagesRsocket") Counter counter,
-        @Value("${transports.rsocket.port}") int port,
+        @Value("${transport.rsocket.port}") int port,
         MsgProvider msgProvider
     ) {
         super(counter);

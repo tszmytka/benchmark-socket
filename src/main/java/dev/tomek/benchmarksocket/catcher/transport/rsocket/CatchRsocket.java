@@ -17,15 +17,15 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Log4j2
-@Component
+//@Component
 public class CatchRsocket extends CatchTransportAbstract implements CatchTransport {
     private final RSocketFactory.Start<RSocket> transport;
     private final Duration duration;
 
     public CatchRsocket(
         @Qualifier("counterMessagesRsocket") Counter counter,
-        @Value("${transports.rsocket.port}") int port,
-        @Value("${duration-per-transport}") Duration duration
+        @Value("${transport.rsocket.port}") int port,
+        @Value("${benchmark.duration}") Duration duration
     ) {
         super(counter);
         transport = RSocketFactory.connect()

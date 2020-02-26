@@ -25,8 +25,8 @@ public class CatcherSocket extends CatchTransportAbstract implements CatchTransp
 
     public CatcherSocket(
         @Qualifier("counterMessagesSocket") Counter counter,
-        @Value("${transports.socket.port}") int port,
-        @Value("${duration-per-transport}") Duration duration
+        @Value("${transport.socket.port}") int port,
+        @Value("${benchmark.duration}") Duration duration
     ) {
         super(counter);
         this.port = port;
