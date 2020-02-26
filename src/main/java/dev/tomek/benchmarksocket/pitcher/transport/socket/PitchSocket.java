@@ -26,7 +26,7 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
 
     public PitchSocket(
         @Qualifier("counterMessagesSocket") Counter counter,
-        @Value("${transports.socket.port}") int port,
+        @Value("${transport.socket.port}") int port,
         MsgProvider msgProvider
     ) {
         super(counter);
@@ -39,6 +39,7 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
         final AtomicBoolean shouldSend = new AtomicBoolean();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             LOGGER.info("Pitcher ready. Accepting connection...");
+            // todo this blocks the entire thread - other pitchers are affected
             final Socket socket = serverSocket.accept();
             // todo close streams
             final BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

@@ -23,7 +23,7 @@ public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
 
     public PitchZmq(
         @Qualifier("counterMessagesRsocket") Counter counter,
-        @Value("${transports.zmq.port}") int port,
+        @Value("${transport.zmq.port}") int port,
         MsgProvider msgProvider,
         ZContext zContext
     ) {

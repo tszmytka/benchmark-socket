@@ -1,5 +1,6 @@
-duration-per-transport: PT45S
-transports:
+benchmark:
+  duration: PT45S
+transport:
   socket:
     port: 7001
   zmq:

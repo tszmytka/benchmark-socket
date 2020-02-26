@@ -13,15 +13,15 @@ import org.zeromq.ZMQ;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-@Component
+//@Component
 public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
     private final ZMQ.Socket socket;
     private final Duration duration;
 
     public CatchZmq(
         @Qualifier("counterMessagesZmq") Counter counter,
-        @Value("${transports.zmq.port}") int port,
-        @Value("${duration-per-transport}") Duration duration,
+        @Value("${transport.zmq.port}") int port,
+        @Value("${benchmark.duration}") Duration duration,
         ZContext zContext
     ) {
         super(counter);
