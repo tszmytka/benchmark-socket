@@ -19,7 +19,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Log4j2
-@Component
+//@Component
 public class PitchRsocket extends PitchTransportAbstract implements PitchTransport {
     private final RSocketFactory.Start<CloseableChannel> transport;
 

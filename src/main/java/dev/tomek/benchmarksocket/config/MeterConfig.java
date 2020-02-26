@@ -11,6 +11,7 @@ import java.time.Duration;
 public class MeterConfig {
     @Bean
     public LoggingMeterRegistry loggingMeterRegistry() {
+        // todo build the registry in a different way - this one inherits from StepMeterRegistry which builds counters returning total amount from last x seconds
         return LoggingMeterRegistry.builder(new LoggingMeterRegConfig()).loggingSink(LOGGER::info).build();
     }
 
