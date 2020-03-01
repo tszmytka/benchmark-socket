@@ -1,5 +1,5 @@
 benchmark:
-  duration: PT45S
+  duration: PT60S
 transport:
   socket:
     port: 7001

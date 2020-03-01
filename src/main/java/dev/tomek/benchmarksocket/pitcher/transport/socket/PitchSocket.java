@@ -16,58 +16,59 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.time.Duration;
 
 @Log4j2
 @Component
 public class PitchSocket extends PitchTransportAbstract implements PitchTransport {
-    private final MsgProvider msgProvider;
-    private final int port;
 
     public PitchSocket(
         @Qualifier("counterMessagesSocket") Counter counter,
+        @Value("${benchmark.duration}") Duration duration,
         @Value("${transport.socket.port}") int port,
         MsgProvider msgProvider
     ) {
-        super(counter);
-        this.msgProvider = msgProvider;
-        this.port = port;
+        super(counter, duration, port, msgProvider);
     }
 
     @Override
     public void run() {
-        final AtomicBoolean shouldSend = new AtomicBoolean();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            LOGGER.info("Pitcher ready. Accepting connection...");
+            LOGGER.info("ServerSocket accepting connection...");
             // todo this blocks the entire thread - other pitchers are affected
             final Socket socket = serverSocket.accept();
-            // todo close streams
-            final BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String line;
-            LOGGER.info("Connection accepted. Waiting for commands...");
-            while ((line = socketReader.readLine()) != null) {
-                final Command command = Command.valueOf(line);
-                LOGGER.info("Received command " + command);
-                switch (command) {
-                    case START:
-                        LOGGER.info("Start sending messages.");
-                        shouldSend.set(true);
-                        try (PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)) {
-                            msgProvider.provide().takeWhile(s -> shouldSend.get()).forEach(msg -> {
-                                onEachMessage(msg);
-                                socketWriter.println(msg);
-                            });
-                        }
-                        onFinally();
-                        break;
-                    case STOP:
-                        shouldSend.set(false);
-                        break;
+            try (BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                LOGGER.info("Connection accepted. Waiting for commands...");
+                String line;
+                while ((line = socketReader.readLine()) != null) {
+                    final Command command = Command.valueOf(line);
+                    LOGGER.info("Received command " + command);
+                    switch (command) {
+                        case START:
+                            sendMessages(socket);
+                            break;
+                        case STOP:
+                            setForceStop(true);
+                            break;
+                    }
                 }
-                throw new IllegalArgumentException("Unknown command");
             }
         } catch (IOException e) {
+            LOGGER.error("Cannot create server socket", e);
+        }
+    }
 
+    private void sendMessages(Socket socket) {
+        markSendStart();
+        try (PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)) {
+            msgProvider.provide().takeWhile(s -> shouldSend()).forEach(msg -> {
+                markMessageSent(msg);
+                socketWriter.println(msg);
+            });
+        } catch (IOException e) {
+            LOGGER.error("Cannot write to socket", e);
+        } finally {
+            markSendFinish();
         }
     }
 }

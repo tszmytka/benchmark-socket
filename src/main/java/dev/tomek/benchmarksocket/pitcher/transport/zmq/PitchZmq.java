@@ -13,45 +13,49 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.time.Duration;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @Log4j2
 //@Component
 public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
-    private final ZMQ.Socket socket;
-    private final MsgProvider msgProvider;
+    private final ZContext zContext;
 
     public PitchZmq(
-        @Qualifier("counterMessagesRsocket") Counter counter,
+        @Qualifier("counterMessagesZmq") Counter counter,
+        @Value("${benchmark.duration}") Duration duration,
         @Value("${transport.zmq.port}") int port,
         MsgProvider msgProvider,
         ZContext zContext
     ) {
-        super(counter);
-        this.msgProvider = msgProvider;
-        socket = zContext.createSocket(SocketType.PUSH);
-        socket.bind("tcp://*:" + port);
+        super(counter, duration, port, msgProvider);
+        this.zContext = zContext;
     }
 
     @Override
     public void run() {
-        AtomicBoolean shouldSend = new AtomicBoolean();
-        Command command = Command.START;
-        switch (command) {
-            case START:
-                shouldSend.set(true);
-                msgProvider.provide().takeWhile(s -> shouldSend.get()).forEach(data -> {
-                    onEachMessage(data);
-                    socket.send(data);
+        try (ZMQ.Socket socket = zContext.createSocket(SocketType.PUSH)) {
+            socket.bind("tcp://*:" + port);
+            // zmq push socket blocks automatically until pull socket starts receiving
+            socket.send("DUMMY");
+            markSendStart();
+
+/*            Supplier<Stream<String>> supplier = msgProvider::provide;
+            while (shouldSend()) {
+                supplier.get().takeWhile(s -> shouldSend()).forEach(msg -> {
+                    socket.send(msg);
+                    markMessageSent(msg);
                 });
-                onFinally();
-                break;
-            case STOP:
-                LOGGER.info("STOP received");
-                shouldSend.set(false);
-                break;
+            }*/
+
+
+            msgProvider.provide().takeWhile(s -> shouldSend()).forEach(msg -> {
+                socket.send(msg);
+                markMessageSent(msg);
+            });
+        } finally {
+            markSendFinish();
         }
-        throw new IllegalArgumentException("Unknown command");
     }
 }
-

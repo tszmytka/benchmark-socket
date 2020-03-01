@@ -4,22 +4,31 @@ import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Log4j2
 @RequiredArgsConstructor
 public class CatchTransportAbstract {
     private final Counter counter;
-    private final Set<String> msgsReceived = new HashSet<>();
+
+    /**
+     * This can influence results if a large number of messages is sent
+     */
+    private final boolean storeMsgs = false;
+    private final Collection<String> msgsReceived = new ArrayList<>();
 
     protected void onEachMessage(String msg) {
-        msgsReceived.add(msg);
+        if (storeMsgs) {
+            msgsReceived.add(msg);
+        }
         counter.increment();
     }
 
     protected void onFinally() {
-        LOGGER.info(String.format("Messages received: %d. Hash: %s", msgsReceived.size(), msgsReceived.hashCode()));
-        LOGGER.info(String.format("Messages received: %s", counter.count()));
+        if (storeMsgs) {
+            LOGGER.info(String.format("Messages received: %d. Hash: %s", msgsReceived.size(), msgsReceived.hashCode()));
+        }
+        LOGGER.info("Finished catching");
     }
 }
