@@ -14,28 +14,29 @@ import io.rsocket.util.DefaultPayload;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 @Log4j2
 //@Component
 public class PitchRsocket extends PitchTransportAbstract implements PitchTransport {
-    private final RSocketFactory.Start<CloseableChannel> transport;
 
     public PitchRsocket(
         @Qualifier("counterMessagesRsocket") Counter counter,
+        @Value("${benchmark.duration}") Duration duration,
         @Value("${transport.rsocket.port}") int port,
         MsgProvider msgProvider
     ) {
-        super(counter);
-        this.transport = RSocketFactory.receive()
-            .acceptor((setup, sendingSocket) -> Mono.just(new PitchingSocket(msgProvider)))
-            .transport(TcpServerTransport.create(port));
+        super(counter, duration, port, msgProvider);
     }
 
     @Override
     public void run() {
+        RSocketFactory.Start<CloseableChannel> transport = RSocketFactory.receive()
+            .acceptor((setup, sendingSocket) -> Mono.just(new PitchingSocket(msgProvider)))
+            .transport(TcpServerTransport.create(port));
         transport.start().block();
     }
 
@@ -52,12 +53,17 @@ public class PitchRsocket extends PitchTransportAbstract implements PitchTranspo
             switch (command) {
                 case START:
                     LOGGER.info(String.format("Received command '%s'. Begin sending messages", command));
-                    return msgFlux.doOnEach(s -> onEachMessage(s.get())).map(DefaultPayload::create).doFinally(s -> {
-                        onFinally();
-                        dispose();
-                    });
+                    markSendStart();
+                    return msgFlux.takeWhile(s -> shouldSend())
+                        .map(DefaultPayload::create)
+                        .doOnEach(signal -> markMessageSent(signal.get().getDataUtf8()))
+                        .doFinally(s -> {
+                            markSendFinish();
+                            dispose();
+                        });
                 case STOP:
-                    throw new IllegalArgumentException("Not yet implemented");
+                    setForceStop(true);
+                    break;
             }
             throw new IllegalArgumentException("Unknown command");
         }

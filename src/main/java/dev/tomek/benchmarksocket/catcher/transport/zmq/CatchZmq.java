@@ -11,9 +11,8 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
 
-//@Component
+@Component
 public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
     private final ZMQ.Socket socket;
     private final Duration duration;
@@ -32,9 +31,9 @@ public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
 
     @Override
     public void run() {
-        long endMillis = ZonedDateTime.now().plus(duration).toInstant().toEpochMilli();
-        while (System.currentTimeMillis() <= endMillis) {
-            onEachMessage(new String(socket.recv()));
+        byte[] data;
+        while ((data = socket.recv()) != null) {
+            onEachMessage(new String(data));
         }
         onFinally();
     }
