@@ -11,8 +11,6 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-import java.time.Duration;
-
 import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
 import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_ZMQ;
 
@@ -20,18 +18,15 @@ import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_ZMQ;
 @ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_ZMQ)
 public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
     private final ZMQ.Socket socket;
-    private final Duration duration;
 
     public CatchZmq(
         @Qualifier("counterMessagesZmq") Counter counter,
         @Value("${transport.zmq.port}") int port,
-        @Value("${benchmark.duration}") Duration duration,
         ZContext zContext
     ) {
         super(counter);
         socket = zContext.createSocket(SocketType.PULL);
         socket.connect("tcp://127.0.0.1:" + port);
-        this.duration = duration;
     }
 
     @Override
