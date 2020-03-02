@@ -7,19 +7,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
-import java.util.Collection;
-
 @RequiredArgsConstructor
 @SpringBootApplication
 public class Pitcher {
-    private final Collection<PitchTransport> pitchTransports;
+    private final PitchTransport pitchTransport;
 
     public static void main(String[] args) {
-        SpringApplication.run(Pitcher.class);
+        SpringApplication.run(Pitcher.class, args);
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
-        pitchTransports.forEach(Runnable::run);
+        pitchTransport.run();
     }
 }

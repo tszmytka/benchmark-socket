@@ -5,6 +5,7 @@ import dev.tomek.benchmarksocket.catcher.transport.CatchTransportAbstract;
 import io.micrometer.core.instrument.Counter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -12,7 +13,11 @@ import org.zeromq.ZMQ;
 
 import java.time.Duration;
 
+import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
+import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_ZMQ;
+
 @Component
+@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_ZMQ)
 public class CatchZmq extends CatchTransportAbstract implements CatchTransport {
     private final ZMQ.Socket socket;
     private final Duration duration;
