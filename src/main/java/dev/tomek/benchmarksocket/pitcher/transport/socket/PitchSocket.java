@@ -40,7 +40,6 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             LOGGER.info("ServerSocket accepting connection...");
-            // todo this blocks the entire thread - other pitchers are affected
             final Socket socket = serverSocket.accept();
             try (BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 LOGGER.info("Connection accepted. Waiting for commands...");
@@ -59,7 +58,7 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Cannot create server socket", e);
+            LOGGER.error("Connection error", e);
         }
     }
 

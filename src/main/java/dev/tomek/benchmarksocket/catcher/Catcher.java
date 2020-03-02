@@ -10,11 +10,11 @@ import org.springframework.context.event.EventListener;
 
 import java.util.Collection;
 
+@Log4j2
 @SpringBootApplication
 @RequiredArgsConstructor
-@Log4j2
 public class Catcher {
-    private final Collection<CatchTransport> catchTransports;
+    private final CatchTransport catchTransport;
 
     public static void main(String[] args) {
         SpringApplication.run(Catcher.class, args);
@@ -22,11 +22,7 @@ public class Catcher {
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
-        catchTransports.forEach(catchTransport -> {
-            String msg = "receiving messages with " + catchTransport.getClass().getSimpleName();
-            LOGGER.info("Start " + msg);
-            catchTransport.run();
-            LOGGER.info("Finished " + msg);
-        });
+        LOGGER.info("Running catcher " + catchTransport.getClass().getSimpleName());
+        catchTransport.run();
     }
 }
