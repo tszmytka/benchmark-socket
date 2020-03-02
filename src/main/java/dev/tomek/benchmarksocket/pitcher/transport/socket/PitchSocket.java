@@ -8,6 +8,7 @@ import io.micrometer.core.instrument.Counter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -18,8 +19,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
 
+import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
+import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_SOCKET;
+
 @Log4j2
 @Component
+@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_SOCKET)
 public class PitchSocket extends PitchTransportAbstract implements PitchTransport {
 
     public PitchSocket(

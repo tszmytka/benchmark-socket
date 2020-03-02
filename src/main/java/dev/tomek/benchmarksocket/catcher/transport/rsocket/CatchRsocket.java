@@ -12,12 +12,17 @@ import io.rsocket.util.DefaultPayload;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
+import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
+import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_RSOCKET;
+
 @Log4j2
-//@Component
+@Component
+@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_RSOCKET)
 public class CatchRsocket extends CatchTransportAbstract implements CatchTransport {
     private final RSocketFactory.Start<RSocket> transport;
     private final Duration duration;

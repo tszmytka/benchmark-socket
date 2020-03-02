@@ -1,6 +1,8 @@
 package dev.tomek.benchmarksocket.pitcher.transport.zmq;
 
 import dev.tomek.benchmarksocket.Command;
+import dev.tomek.benchmarksocket.config.CommonConfig;
+import dev.tomek.benchmarksocket.pitcher.Pitcher;
 import dev.tomek.benchmarksocket.pitcher.msgprovider.MsgProvider;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransportAbstract;
@@ -8,6 +10,7 @@ import io.micrometer.core.instrument.Counter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -17,8 +20,12 @@ import java.time.Duration;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
+import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_ZMQ;
+
 @Log4j2
-//@Component
+@Component
+@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_ZMQ)
 public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
     private final ZContext zContext;
 
