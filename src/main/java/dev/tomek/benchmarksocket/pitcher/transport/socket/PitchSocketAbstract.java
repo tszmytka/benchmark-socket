@@ -6,33 +6,18 @@ import dev.tomek.benchmarksocket.pitcher.transport.PitchTransport;
 import dev.tomek.benchmarksocket.pitcher.transport.PitchTransportAbstract;
 import io.micrometer.core.instrument.Counter;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
 
-import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
-import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_SOCKET;
-
 @Log4j2
-@Component
-@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_SOCKET)
-public class PitchSocket extends PitchTransportAbstract implements PitchTransport {
+abstract class PitchSocketAbstract extends PitchTransportAbstract implements PitchTransport {
 
-    public PitchSocket(
-        @Qualifier("counterMessagesSocket") Counter counter,
-        @Value("${benchmark.duration}") Duration duration,
-        @Value("${transport.socket.port}") int port,
-        MsgProvider msgProvider
-    ) {
+    public PitchSocketAbstract(Counter counter, Duration duration, int port, MsgProvider msgProvider) {
         super(counter, duration, port, msgProvider);
     }
 
@@ -62,17 +47,5 @@ public class PitchSocket extends PitchTransportAbstract implements PitchTranspor
         }
     }
 
-    private void sendMessages(Socket socket) {
-        markSendStart();
-        try (PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)) {
-            msgProvider.provide().takeWhile(s -> shouldSend()).forEach(msg -> {
-                markMessageSent(msg);
-                socketWriter.println(msg);
-            });
-        } catch (IOException e) {
-            LOGGER.error("Cannot write to socket", e);
-        } finally {
-            markSendFinish();
-        }
-    }
+    protected abstract void sendMessages(Socket socket);
 }

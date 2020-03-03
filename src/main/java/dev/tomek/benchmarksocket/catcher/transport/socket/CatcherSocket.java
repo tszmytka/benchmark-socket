@@ -10,19 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 
 import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
-import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_SOCKET;
+import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_SOCKET_PLAIN;
 
 @Log4j2
 @Component
-@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_SOCKET)
+@ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_SOCKET_PLAIN)
 public class CatcherSocket extends CatchTransportAbstract implements CatchTransport {
     private static final int CONNECTION_ATTEMPTS_MAX = 10;
     private final int port;

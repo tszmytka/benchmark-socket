@@ -47,16 +47,6 @@ public class PitchZmq extends PitchTransportAbstract implements PitchTransport {
             // zmq push socket blocks automatically until pull socket starts receiving
             socket.send("DUMMY");
             markSendStart();
-
-/*            Supplier<Stream<String>> supplier = msgProvider::provide;
-            while (shouldSend()) {
-                supplier.get().takeWhile(s -> shouldSend()).forEach(msg -> {
-                    socket.send(msg);
-                    markMessageSent(msg);
-                });
-            }*/
-
-
             msgProvider.provide().takeWhile(s -> shouldSend()).forEach(msg -> {
                 socket.send(msg);
                 markMessageSent(msg);
