@@ -6,15 +6,16 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
-
-import java.util.Collection;
 
 @Log4j2
 @SpringBootApplication
 @RequiredArgsConstructor
 public class Catcher {
     private final CatchTransport catchTransport;
+
+    private final ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
         SpringApplication.run(Catcher.class, args);
@@ -24,5 +25,6 @@ public class Catcher {
     public void start() {
         LOGGER.info("Running catcher " + catchTransport.getClass().getSimpleName());
         catchTransport.run();
+        context.close();
     }
 }

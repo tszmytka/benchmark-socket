@@ -33,7 +33,8 @@ public class PitchSocketPlain extends PitchSocketAbstract {
     @Override
     protected void sendMessages(Socket socket) {
         markSendStart();
-        try (PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)) {
+        try {
+            PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true);
             msgProvider.provide().takeWhile(s -> shouldSend()).forEach(msg -> {
                 socketWriter.println(msg);
                 markMessageSent(msg);

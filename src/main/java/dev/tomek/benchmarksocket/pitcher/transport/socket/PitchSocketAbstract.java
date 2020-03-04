@@ -28,20 +28,20 @@ abstract class PitchSocketAbstract extends PitchTransportAbstract implements Pit
             final Socket socket = serverSocket.accept();
             try (BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 LOGGER.info("Connection accepted. Waiting for commands...");
-                String line;
-                while ((line = socketReader.readLine()) != null) {
-                    final Command command = Command.valueOf(line);
-                    LOGGER.info("Received command " + command);
-                    switch (command) {
-                        case START:
-                            sendMessages(socket);
-                            break;
-                        case STOP:
-                            setForceStop(true);
-                            break;
-                    }
+                String line = socketReader.readLine();
+                final Command command = Command.valueOf(line);
+                LOGGER.info("Received command " + command);
+                switch (command) {
+                    case START:
+                        sendMessages(socket);
+                        break;
+                    case STOP:
+                        setForceStop(true);
+                        break;
                 }
             }
+            LOGGER.info("Closing sockets");
+            socket.close();
         } catch (IOException e) {
             LOGGER.error("Connection error", e);
         }

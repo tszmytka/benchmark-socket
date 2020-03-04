@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 
@@ -50,7 +53,7 @@ public class CatcherSocket extends CatchTransportAbstract implements CatchTransp
                 LOGGER.warn("Failed to connect. Retrying...");
                 failedAttempt++;
                 if (failedAttempt > CONNECTION_ATTEMPTS_MAX) {
-                    throw new RuntimeException("Max connection attempts reached " + CONNECTION_ATTEMPTS_MAX);
+                    throw new RuntimeException("Max connection attempts reached: " + CONNECTION_ATTEMPTS_MAX);
                 }
                 try {
                     Thread.sleep(5000);
