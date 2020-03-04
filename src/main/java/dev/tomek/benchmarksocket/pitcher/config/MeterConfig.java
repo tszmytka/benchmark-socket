@@ -15,6 +15,7 @@ public class MeterConfig extends dev.tomek.benchmarksocket.config.MeterConfig {
 
     @Bean
     public Counter counterMessagesZmq(MeterRegistry meterRegistry) {
+
         return meterRegistry.counter("messages.sent", "transport", "zmq");
     }
 
