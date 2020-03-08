@@ -10,6 +10,7 @@ import java.util.Collection;
 @Log4j2
 @RequiredArgsConstructor
 public class CatchTransportAbstract {
+    protected static final int CONNECTION_ATTEMPTS_MAX = 10;
     private final Counter counter;
 
     /**

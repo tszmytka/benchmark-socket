@@ -25,17 +25,14 @@ import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_RSOCKET;
 @ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_RSOCKET)
 public class CatchRsocket extends CatchTransportAbstract implements CatchTransport {
     private final RSocketFactory.Start<RSocket> transport;
-    private final Duration duration;
 
     public CatchRsocket(
         @Qualifier("counterMessagesRsocket") Counter counter,
-        @Value("${transport.rsocket.port}") int port,
-        @Value("${benchmark.duration}") Duration duration
+        @Value("${transport.rsocket.port}") int port
     ) {
         super(counter);
         transport = RSocketFactory.connect()
             .transport(TcpClientTransport.create(port));
-        this.duration = duration;
     }
 
     @Override
@@ -43,7 +40,8 @@ public class CatchRsocket extends CatchTransportAbstract implements CatchTranspo
         transport.start()
             .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create(Command.START.toString())).map(Payload::getDataUtf8))
             .doOnEach(s -> onEachMessage(s.get()))
-            .take(duration)
+            .log()
+            .retryBackoff(CONNECTION_ATTEMPTS_MAX, Duration.ofSeconds(5), Duration.ofSeconds(30))
             .blockLast();
         onFinally();
     }

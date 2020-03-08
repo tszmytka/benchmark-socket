@@ -24,7 +24,6 @@ import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_SOCKET_PLA
 @Component
 @ConditionalOnProperty(name = PARAM_TRANSPORT, havingValue = TRANSPORT_SOCKET_PLAIN)
 public class CatcherSocket extends CatchTransportAbstract implements CatchTransport {
-    private static final int CONNECTION_ATTEMPTS_MAX = 10;
     private final int port;
 
     public CatcherSocket(
