@@ -4,6 +4,31 @@ A benchmark application comparing performance aspects of various transport appro
 * Rsocket
 * ZMQ
 
+## Execution
+Project consists of 2 separate applications. They are configured to be automatically compatible for each `transport`.
+- Pitcher: Responsible for _throwing_ the messages using the specified `transport`
+- Catcher: Responsible for _receiving_ using the specified `transport`
+
+Running a benchmark is a matter of running a `Pitcher` and `Catcher` pair specifying the correct main class as well as a transport type.
+```bash
+# For Pitcher
+java -jar benchmark-socket.jar dev.tomek.benchmarksocket.pitcher.Pitcher --transport=<transport-name>
+
+# For Catcher
+java -jar benchmark-socket.jar dev.tomek.benchmarksocket.catcher.Catcher --transport=<transport-name>
+```
+
+Possible transports:
+```bash
+socketPlain
+socketRefined
+rsocket
+zmq
+```
+
+## Results
+Here are sample results from my runs.
+
 ### Specs
 
 All results presented here have been performed on the same machine for comparability
