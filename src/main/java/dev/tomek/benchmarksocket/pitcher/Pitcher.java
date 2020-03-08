@@ -24,7 +24,7 @@ public class Pitcher {
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
         LOGGER.info("Running pitcher: " + pitchTransport.getClass().getSimpleName());
+        pitchTransport.setDoAfterMessagesSent(context::close);
         pitchTransport.run();
-        context.close();
     }
 }

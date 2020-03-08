@@ -36,7 +36,7 @@ abstract class PitchSocketAbstract extends PitchTransportAbstract implements Pit
                         sendMessages(socket);
                         break;
                     case STOP:
-                        setForceStop(true);
+                        stopSending();
                         break;
                 }
             }

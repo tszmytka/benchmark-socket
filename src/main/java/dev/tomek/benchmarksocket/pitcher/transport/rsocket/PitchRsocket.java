@@ -8,7 +8,6 @@ import io.micrometer.core.instrument.Counter;
 import io.rsocket.AbstractRSocket;
 import io.rsocket.Payload;
 import io.rsocket.RSocketFactory;
-import io.rsocket.transport.netty.server.CloseableChannel;
 import io.rsocket.transport.netty.server.TcpServerTransport;
 import io.rsocket.util.DefaultPayload;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +19,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import static dev.tomek.benchmarksocket.config.CommonConfig.PARAM_TRANSPORT;
 import static dev.tomek.benchmarksocket.config.CommonConfig.TRANSPORT_RSOCKET;
@@ -40,10 +40,11 @@ public class PitchRsocket extends PitchTransportAbstract implements PitchTranspo
 
     @Override
     public void run() {
-        RSocketFactory.Start<CloseableChannel> transport = RSocketFactory.receive()
+        RSocketFactory.receive()
             .acceptor((setup, sendingSocket) -> Mono.just(new PitchingSocket(msgProvider)))
-            .transport(TcpServerTransport.create(port));
-        transport.start().block();
+            .transport(TcpServerTransport.create(port))
+            .start()
+            .block();
     }
 
     class PitchingSocket extends AbstractRSocket {
@@ -62,13 +63,10 @@ public class PitchRsocket extends PitchTransportAbstract implements PitchTranspo
                     markSendStart();
                     return msgFlux.takeWhile(s -> shouldSend())
                         .map(DefaultPayload::create)
-                        .doOnEach(signal -> markMessageSent(signal.get().getDataUtf8()))
-                        .doFinally(s -> {
-                            markSendFinish();
-                            dispose();
-                        });
+                        .doOnEach(signal -> Optional.ofNullable(signal.get()).ifPresent(p -> markMessageSent(p.getDataUtf8())))
+                        .doOnComplete(PitchRsocket.this::markSendFinish);
                 case STOP:
-                    setForceStop(true);
+                    stopSending();
                     break;
             }
             throw new IllegalArgumentException("Unknown command");

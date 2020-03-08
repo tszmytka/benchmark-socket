@@ -40,9 +40,7 @@ public class CatchRsocket extends CatchTransportAbstract implements CatchTranspo
         transport.start()
             .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create(Command.START.toString())).map(Payload::getDataUtf8))
             .doOnEach(s -> onEachMessage(s.get()))
-            .log()
             .retryBackoff(CONNECTION_ATTEMPTS_MAX, Duration.ofSeconds(5), Duration.ofSeconds(30))
             .blockLast();
-        onFinally();
     }
 }
