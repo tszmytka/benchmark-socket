@@ -1,0 +1,8 @@
+version: "3.6"
+services:
+  prometheus.benchmark-socket:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - /benchmark-socket/provision/prometheus/etc/prometheus:/etc/prometheus
