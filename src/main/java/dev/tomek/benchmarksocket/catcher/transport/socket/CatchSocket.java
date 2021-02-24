@@ -23,11 +23,11 @@ import static dev.tomek.benchmarksocket.config.CommonConfig.*;
 
 @Log4j2
 @Component
-@Conditional(CatcherSocket.ConditionTransportSocket.class)
-public class CatcherSocket extends CatchTransportAbstract implements CatchTransport {
+@Conditional(CatchSocket.ConditionTransportSocket.class)
+public class CatchSocket extends CatchTransportAbstract implements CatchTransport {
     private final int port;
 
-    public CatcherSocket(
+    public CatchSocket(
         @Qualifier("counterMessagesSocket") Counter counter,
         @Value("${transport.socket.port}") int port
     ) {

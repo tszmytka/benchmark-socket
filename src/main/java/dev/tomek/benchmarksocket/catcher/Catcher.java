@@ -24,7 +24,6 @@ public class Catcher {
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
         LOGGER.info("Running catcher " + catchTransport.getClass().getSimpleName());
-        catchTransport.run();
-        context.close();
+        new Thread(catchTransport).start();
     }
 }
