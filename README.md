@@ -35,7 +35,7 @@ All results presented here have been performed on the same machine for comparabi
 
 | CPU                               | CORES   | RAM        |
 | --------------------------------- | ------  | ---------- |
-| Inter Core i7-4720 @ 2.60GHz      | 8       | 8GB DDR3   |
+| Inter Core i7-4720 @ 2.60GHz      | 4       | 8GB DDR3   |
 
 JDK version
 ```

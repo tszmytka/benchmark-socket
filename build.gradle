@@ -2,14 +2,14 @@ plugins {
     id 'java'
     id 'application'
     id 'idea'
-    id 'org.springframework.boot' version '2.2.0.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'nebula.release' version '14.0.3'
 }
 
 group = 'dev.tomek'
-sourceCompatibility = '11'
-def lombokVer = '1.18.10'
+sourceCompatibility = '15'
+def lombokVer = '1.18.18'
 def rSocketVer = "1.0.0-RC5"
 
 repositories {

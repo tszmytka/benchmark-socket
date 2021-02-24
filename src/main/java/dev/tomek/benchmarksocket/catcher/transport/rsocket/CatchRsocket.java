@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
@@ -40,7 +41,7 @@ public class CatchRsocket extends CatchTransportAbstract implements CatchTranspo
         transport.start()
             .flatMapMany(rSocket -> rSocket.requestStream(DefaultPayload.create(Command.START.toString())).map(Payload::getDataUtf8))
             .doOnEach(s -> onEachMessage(s.get()))
-            .retryBackoff(CONNECTION_ATTEMPTS_MAX, Duration.ofSeconds(5), Duration.ofSeconds(30))
+            .retryWhen(Retry.backoff(CONNECTION_ATTEMPTS_MAX, Duration.ofSeconds(5)))
             .blockLast();
     }
 }
