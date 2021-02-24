@@ -9,7 +9,5 @@ class CatcherTest {
 
     @Test
     void canLoadContext() {
-        // this will only hang at the moment
     }
-
 }
